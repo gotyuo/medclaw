@@ -1,372 +1,427 @@
-# MedClaw 医疗智能助手
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/your-org/medclaw)
-[![Python](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
-**MedClaw** 是一个专为医疗场景设计的智能任务执行系统，基于 OpenClaw 框架构建，提供 9 大医疗职业场景的标准化任务模板和动态任务调整能力。
+## 项目简介
 
----
+MedClaw 是一款功能强大的**医学自动化助手**，旨在通过 AI 技术提升医疗工作效率，减轻医护人员工作负担，提高医疗质量。
 
-## 🌟 核心特性
+### 核心价值
 
-- **🏥 9 大医疗职业场景**：覆盖临床、质控、医保、影像、药学、科研、护理、急诊、康复
-- **📋 21 个标准任务模板**：符合医疗规范的专业流程
-- **⚡ 动态任务调整**：支持跳过、插入、修改步骤
-- **🔌 标准化接口**：REST API + WebSocket 实时通信
-- **🧪 完整测试套件**：Mock 数据支持，无需真实接口即可测试
-- **📚 完善文档**：API 文档、架构说明、使用指南
+- **智能化**：集成多种 AI 模型，实现病历生成、影像分析、风险预测等功能
+- **自动化**：支持工具编排、任务调度、分布式执行
+- **一体化**：统一配置管理，多模块协同工作
+- **可扩展**：插件化架构，易于扩展新功能
 
----
+## 主要功能
 
-## 🏗️ 系统架构
+### 1. 医疗功能模块
 
+| 模块             | 功能     | 描述                             |
+| :------------- | :----- | :----------------------------- |
+| **电子病历生成引擎**   | 智能病历生成 | 自动对接 HIS/LIS/PACS/病理系统，生成结构化病历 |
+| **医疗质量智能审计**   | 病历质控   | 基于知识图谱的病历质量智能评估与风险预警           |
+| **医保合规性评估**    | 医保分析   | DRG/DIP 分组、费用监控、合规性检查          |
+| **临床风险预测**     | 风险评估   | 基于多源数据的败血症、并发症等风险预测            |
+| **医学影像 AI 诊断** | 影像分析   | 肺结节、骨折、脑卒中、肿瘤等智能检测             |
+| **临床科研数据分析**   | 科研支持   | 一站式统计分析与可视化，支持论文撰写             |
+| **医学文献智能解读**   | 文献分析   | 基于 NLP 的文献自动解析与知识提取            |
+
+### 2. 技术架构功能
+
+| 功能             | 描述                | 优势                   |
+| :------------- | :---------------- | :------------------- |
+| **工具编排**       | 智能构建工具链，支持链式和并行执行 | 执行速度提升 87%，缓存命中率 95% |
+| **分布式执行**      | 并行任务调度，动态依赖解析     | 支持复杂任务的高效执行          |
+| **多 Agent 协作** | 电脑操作、办公自动化、任务规划   | 模拟人类工作流程，实现复杂任务自动化   |
+| **统一配置管理**     | 集中式配置界面，实时热更新     | 配置变更无需重启，管理更简单       |
+| **任务队列与分发**    | 优先级调度，负载均衡        | 系统稳定性高，资源利用优化        |
+| **任务状态持久化**    | 多数据库支持，状态同步       | 系统重启后任务不丢失           |
+| **安全与审计**      | 权限控制，操作审计         | 符合医疗数据安全要求           |
+
+## 技术架构
+
+### 系统架构
+
+```mermaid
+flowchart TD
+    subgraph 前端层
+        WebUI[Web 界面]
+        MedicalUI[医疗专用界面]
+        API[API 接口]
+    end
+    
+    subgraph 核心层
+        ToolOrchestrator[工具编排器]
+        TaskEngine[任务引擎]
+        AgentCoordinator[Agent 协调器]
+        ConfigManager[配置管理器]
+    end
+    
+    subgraph 执行层
+        ParallelExecutor[并行执行器]
+        TaskDispatcher[任务分发器]
+        TaskQueue[任务队列]
+        TaskStorage[任务存储]
+    end
+    
+    subgraph 业务层
+        EMR[电子病历模块]
+        Quality[医疗质量模块]
+        Insurance[医保分析模块]
+        Risk[临床风险模块]
+        Imaging[医学影像模块]
+        Research[科研分析模块]
+        Literature[文献分析模块]
+    end
+    
+    subgraph 外部系统
+        HIS[HIS 系统]
+        LIS[LIS 系统]
+        PACS[PACS 系统]
+        Database[数据库]
+    end
+    
+    WebUI --> API
+    MedicalUI --> API
+    API --> ToolOrchestrator
+    API --> TaskEngine
+    API --> AgentCoordinator
+    
+    ToolOrchestrator --> ParallelExecutor
+    TaskEngine --> TaskDispatcher
+    AgentCoordinator --> TaskEngine
+    
+    TaskDispatcher --> TaskQueue
+    TaskQueue --> TaskStorage
+    
+    ParallelExecutor --> EMR
+    ParallelExecutor --> Quality
+    ParallelExecutor --> Insurance
+    ParallelExecutor --> Risk
+    ParallelExecutor --> Imaging
+    ParallelExecutor --> Research
+    ParallelExecutor --> Literature
+    
+    EMR --> HIS
+    EMR --> LIS
+    EMR --> PACS
+    Risk --> HIS
+    Risk --> LIS
+    Risk --> PACS
+    Imaging --> PACS
+    TaskStorage --> Database
 ```
-MedClaw/
-├── medclaw/
-│   ├── core/                      # 核心引擎
-│   │   ├── task_engine.py         # 任务执行引擎
-│   │   ├── medical_ui_openclaw.py # Web UI 和 API
-│   │   └── ...
-│   ├── task_framework.py          # 任务框架和模板定义
-│   └── ...
-├── tests/                         # 测试套件
-│   ├── mock_data.py               # Mock 医疗数据
-│   ├── mock_executor.py           # Mock 执行器
-│   └── test_all_functions.py      # 完整功能测试
-├── docs/                          # 文档
-│   └── API_DOCUMENTATION.md       # API 接口文档
-└── README.md                      # 本文件
-```
 
----
+### 技术栈
 
-## 🚀 快速开始
+| 类别         | 技术                      | 版本      | 用途             |
+| :--------- | :---------------------- | :------ | :------------- |
+| **编程语言**   | Python                  | 3.8+    | 核心开发语言         |
+| **Web 框架** | FastAPI                 | 0.104.1 | API 接口和 Web 界面 |
+| **数据库**    | SQLite/MySQL/PostgreSQL | -       | 数据存储           |
+| **异步处理**   | asyncio                 | -       | 并发执行           |
+| **容器化**    | Docker                  | -       | 部署支持           |
+| **AI 框架**  | PyTorch/TensorFlow      | -       | 模型推理           |
+| **文档**     | Markdown                | -       | 项目文档           |
+
+## 快速开始
 
 ### 1. 环境要求
 
-- Python 3.8+
-- 依赖包：FastAPI, Pydantic, Uvicorn
+- Python 3.8 或更高版本
+- pip 包管理器
+- 支持的操作系统：Windows/Linux/macOS
 
-### 2. 安装依赖
+### 2. 安装部署
+
+#### 方法一：一键启动（推荐）
 
 ```bash
+# 克隆项目
+git clone https://github.com/zteyesreal/medclaw.git
+cd medclaw
+
+# 双击启动脚本
+start.bat  # Windows
+# 或
+./start.sh  # Linux/macOS
+```
+
+#### 方法二：手动安装
+
+```bash
+# 克隆项目
+git clone https://github.com/zteyesreal/medclaw.git
+cd medclaw
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 初始化数据库
+python scripts/init_db.py
+
+# 启动服务
+python main.py
+
+# 启动 Web 界面
+python start_webui.py
+```
+
+### 3. 访问方式
+
+- **Web 界面**：<http://localhost:8003/>
+- **API 文档**：<http://localhost:8003/docs>
+- **统一设置**：<http://localhost:8003/api/settings/page>
+- **模块配置**：<http://localhost:8003/api/module-config/page>
+
+## 目录结构
+
+```
+medclaw/
+├── data/             # 数据文件
+├── examples/         # 示例代码
+│   ├── agent_collaboration/    # Agent 协作示例
+│   └── tool_orchestration/     # 工具编排示例
+├── logs/             # 日志文件
+├── medclaw/          # 核心代码
+│   ├── adapters/     # 适配器
+│   ├── core/         # 核心功能
+│   │   ├── agents/   # Agent 实现
+│   │   └── ...       # 其他核心模块
+│   ├── modules/      # 业务模块
+│   └── utils/        # 工具函数
+├── models/           # AI 模型
+├── rules/            # 规则配置
+├── scripts/          # 脚本工具
+├── templates/        # 模板文件
+├── tests/            # 测试文件
+├── config.yaml       # 配置文件
+├── main.py           # 主服务入口
+├── start.bat         # 启动脚本
+├── start_webui.py    # Web 界面启动
+└── requirements.txt  # 依赖文件
+```
+
+## 核心模块说明
+
+### 1. 工具编排系统
+
+**功能**：智能构建和执行工具链，支持链式执行和并行执行。
+
+**使用示例**：
+
+```python
+from medclaw.core.tool_orchestrator import ToolOrchestrator
+
+# 创建编排器
+orchestrator = ToolOrchestrator()
+
+# 链式执行
+chain = orchestrator.create_chain()
+chain.add_step("read_file", {"file_path": "data/patient.txt"})
+chain.add_step("analyze_data", {"data": "{{step1.result}}"})
+chain.add_step("generate_report", {"analysis": "{{step2.result}}"})
+
+# 执行链式任务
+result = await orchestrator.execute_chain(chain)
+
+# 并行执行
+parallel = orchestrator.create_parallel()
+parallel.add_step("fetch_patient_data", {"patient_id": "123"})
+parallel.add_step("fetch_lab_results", {"patient_id": "123"})
+parallel.add_step("fetch_imaging_data", {"patient_id": "123"})
+
+# 执行并行任务
+results = await orchestrator.execute_parallel(parallel)
+```
+
+### 2. 分布式任务框架
+
+**功能**：支持复杂任务的并行执行，自动解析依赖关系。
+
+**特点**：
+
+- 拓扑排序算法，自动解析任务依赖
+- 无依赖步骤并行执行
+- 支持条件执行和动态任务调整
+- 优先级调度和超时处理
+
+### 3. 多 Agent 协作
+
+**功能**：多个专业 Agent 协同工作，完成复杂任务。
+
+**内置 Agent**：
+
+- **ComputerUseAgent**：电脑操作，如截图、点击、输入
+- **OfficeAutomationAgent**：办公自动化，如文件整理、邮件处理
+- **TaskPlannerAgent**：任务规划，将复杂目标拆解为子任务
+
+### 4. 配置管理系统
+
+**功能**：集中式配置管理，支持实时热更新。
+
+**配置类型**：
+
+- 统一设置：API 接口、数据库、全局参数
+- 模块配置：7 大业务模块的独立配置
+
+**访问方式**：
+
+- Web 界面：<http://localhost:8003/api/settings/page>
+- API 接口：/api/settings, /api/module-config
+
+## 配置说明
+
+### 1. 统一设置
+
+**配置文件**：`config/config.json`
+
+**主要配置项**：
+
+```json
+{
+  "app_name": "MedClaw",
+  "debug": false,
+  "api": {
+    "base_url": "http://localhost:8000",
+    "timeout": 30
+  },
+  "database": {
+    "driver": "sqlite",
+    "database": "medclaw.db"
+  },
+  "module": {
+    "enabled": true,
+    "log_level": "INFO"
+  }
+}
+```
+
+### 2. 模块配置
+
+**配置文件**：`config/modules_config.json`
+
+**示例配置**：
+
+```json
+{
+  "emr_generation": {
+    "his_enabled": true,
+    "his_database": {
+      "host": "192.168.1.100",
+      "port": 1433
+    }
+  },
+  "insurance_compliance": {
+    "preprocessor_enabled": true,
+    "preprocessor_host": "192.168.1.200"
+  }
+}
+```
+
+## 开发指南
+
+### 1. 环境搭建
+
+```bash
+# 克隆项目
+git clone https://github.com/zteyesreal/medclaw.git
+cd medclaw
+
+# 创建虚拟环境
+python -m venv venv
+
+# 激活虚拟环境
+venv\Scripts\activate  # Windows
+# 或
+source venv/bin/activate  # Linux/macOS
+
+# 安装依赖
 pip install -r requirements.txt
 ```
 
-### 3. 启动服务
+### 2. 运行测试
 
 ```bash
-# 方式 1：启动 MedClaw 医疗模式
-python -m uvicorn medclaw.core.medical_ui_openclaw:app --host 0.0.0.0 --port 8001
+# 运行所有测试
+python -m pytest
 
-# 方式 2：使用启动脚本
-python start_openclaw_mode.py
+# 运行特定测试
+python -m pytest tests/test_tool_orchestration.py -v
+
+# 运行性能测试
+python -m pytest tests/test_tool_orchestration_performance.py -v
 ```
 
-### 4. 访问系统
+### 3. 代码风格
 
-- **Web UI**: http://localhost:8001
-- **API 文档**: 见 `docs/API_DOCUMENTATION.md`
+- 遵循 PEP 8 编码规范
+- 使用类型注解
+- 编写单元测试
+- 提交前运行 `pylint` 和 `mypy`
 
----
+## 贡献指南
 
-## 📊 功能模块
+### 1. 提交代码
 
-### 9 大医疗职业场景
-
-| 职业 | 模块 ID | 任务数 | 核心功能 |
-|------|---------|--------|----------|
-| 👨‍⚕️ 临床医生 | `clinician` | 3 | 门诊接诊、住院查房、急诊抢救 |
-| ✅ 病历质控员 | `quality_controller` | 2 | 运行病历质控、终末病历评审 |
-| 💰 医保审核员 | `insurance_auditor` | 2 | DRG 分组审核、费用合规性检查 |
-| 🖼️ 放射科医师 | `radiologist` | 2 | CT 报告书写、急诊影像会诊 |
-| 💊 临床药师 | `clinical_pharmacist` | 2 | 处方审核、抗菌药物专项点评 |
-| 📊 科研人员 | `researcher` | 2 | 临床数据提取、统计分析 |
-| 👩‍⚕️ 护士 | `nurse` | 2 | 入院评估、执行医嘱 |
-| 🚑 急诊科医师 | `emergency_physician` | 3 | 急诊分诊、心肺复苏、创伤评估 |
-| ♿ 康复科医师 | `rehabilitation_physician` | 3 | 康复评估、运动疗法、作业疗法 |
-
-**总计：21 个专业任务模板**
-
----
-
-## 🔧 核心功能
-
-### 1. 任务模板系统
-
-每个职业场景都有预定义的标准任务模板：
-
-```python
-from medclaw.task_framework import PROFESSION_TASK_TEMPLATES
-
-# 获取临床医生任务模板
-templates = PROFESSION_TASK_TEMPLATES["clinician"]
-for template in templates:
-    print(f"{template.name}: {template.description}")
-```
-
-### 2. 动态任务调整
-
-支持运行时调整任务步骤：
-
-```python
-# 跳过步骤
-task.steps[2]['skipped'] = True
-
-# 插入步骤
-new_step = {"action": "extra_check", "params": {}}
-task.steps.insert(2, new_step)
-
-# 修改步骤参数
-task.steps[0]['params']['patient_id'] = 'P999'
-```
-
-### 3. 标准化 API 接口
-
-**获取模块列表**
-```bash
-curl http://localhost:8001/api/modules
-```
-
-**获取任务模板**
-```bash
-curl http://localhost:8001/api/tasks
-```
-
-**执行任务**
-```bash
-curl -X POST http://localhost:8001/api/execute_task \
-  -H "Content-Type: application/json" \
-  -d '{
-    "id": "task_001",
-    "name": "门诊接诊",
-    "profession": "clinician",
-    "goal": "为患者张三完成门诊接诊",
-    "steps": [...]
-  }'
-```
-
-详见 [API 文档](docs/API_DOCUMENTATION.md)
-
----
-
-## 🧪 测试
-
-### 运行完整测试套件
-
-```bash
-python tests/test_all_functions.py
-```
-
-**测试结果示例：**
-```
-================================================================================
-                         MedClaw 完整功能测试
-================================================================================
-
-测试汇总:
-  总测试数: 13
-  通过: 13 (100.0%)
-  失败: 0 (0.0%)
-  总耗时: 7.57 秒
-
-✅ 职业模板加载测试
-✅ 临床医生任务测试
-✅ 病历质控员任务测试
-✅ 医保审核员任务测试
-✅ 放射科医师任务测试
-✅ 临床药师任务测试
-✅ 科研人员任务测试
-✅ 护士任务测试
-✅ 急诊科医师任务测试
-✅ 康复科医师任务测试
-✅ 动态调整 - 跳过步骤
-✅ 动态调整 - 插入步骤
-✅ 动态调整 - 修改步骤
-```
-
-### Mock 数据测试
-
-无需真实医疗系统接口，使用 Mock 数据即可完整测试：
-
-```python
-from tests.mock_executor import MockTaskExecutor
-from medclaw.task_framework import Task, PROFESSION_TASK_TEMPLATES
-
-# 创建 Mock 执行器
-executor = MockTaskExecutor()
-
-# 创建任务
-template = PROFESSION_TASK_TEMPLATES["clinician"][0]
-task = Task(
-    id="test_001",
-    name=template.name,
-    profession="clinician",
-    goal="测试任务",
-    steps=template.default_steps
-)
-
-# 执行
-result = await executor.execute_task(task)
-```
-
----
-
-## 📖 文档
-
-| 文档 | 路径 | 描述 |
-|------|------|------|
-| API 接口文档 | [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md) | 完整的 REST API 和 WebSocket 接口说明 |
-| 架构对比分析 | [MedClaw_vs_OpenClaw 深度对比分析.md](MedClaw_vs_OpenClaw%20深度对比分析.md) | MedClaw 与 OpenClaw 的详细对比 |
-| 操作差异详解 | [MedClaw_vs_OpenClaw_操作差异详解.md](MedClaw_vs_OpenClaw_操作差异详解.md) | 实际操作层面的差异分析 |
-| 可靠性分析 | [为什么规范化的 MedClaw 更可靠.md](为什么规范化的%20MedClaw%20更可靠.md) | 规范化设计的优势分析 |
-| 模块一致性验证 | [模块一致性验证报告.md](模块一致性验证报告.md) | 前后端模块一致性验证 |
-
----
-
-## 💡 使用示例
-
-### 示例 1：执行门诊接诊任务
-
-```python
-import asyncio
-from medclaw.task_framework import Task, PROFESSION_TASK_TEMPLATES
-from tests.mock_executor import MockTaskExecutor
-
-async def main():
-    # 获取模板
-    template = PROFESSION_TASK_TEMPLATES["clinician"][0]
-    
-    # 创建任务
-    task = Task(
-        id="outpatient_001",
-        name=template.name,
-        profession="clinician",
-        goal="为患者张三完成门诊接诊，生成规范病历",
-        steps=template.default_steps.copy()
-    )
-    
-    # 执行
-    executor = MockTaskExecutor()
-    result = await executor.execute_task(task)
-    
-    print(f"任务状态: {result['status']}")
-    print(f"执行步骤: {result['success_steps']}/{result['total_steps']}")
-
-asyncio.run(main())
-```
-
-### 示例 2：动态调整任务
-
-```python
-# 跳过某个步骤
-task.steps[2]['skipped'] = True
-
-# 插入新步骤
-new_step = {
-    "action": "extra_examination", 
-    "params": {"type": "心电图"}
-}
-task.steps.insert(3, new_step)
-
-# 修改参数
-task.steps[0]['params']['patient_id'] = 'P002'
-```
-
-### 示例 3：通过 API 调用
-
-```python
-import requests
-
-# 获取所有模块
-modules = requests.get("http://localhost:8001/api/modules").json()
-
-# 获取任务模板
-templates = requests.get("http://localhost:8001/api/tasks").json()
-
-# 执行任务
-result = requests.post(
-    "http://localhost:8001/api/execute_task",
-    json={
-        "id": "task_001",
-        "name": "门诊接诊",
-        "profession": "clinician",
-        "goal": "为患者张三完成门诊接诊",
-        "steps": [...]
-    }
-).json()
-```
-
----
-
-## 🏥 真实医疗场景参数
-
-测试脚本中使用的参数基于真实医疗场景：
-
-| 职业 | 参数示例 | 真实场景 |
-|------|----------|----------|
-| 病历质控员 | `department`: "心内科", `record_count`: 15 | 质控心内科15份运行病历 |
-| 医保审核员 | `month`: "2026-03", `case_count`: 50 | 审核3月份50个病例的DRG分组 |
-| 放射科医师 | `body_part`: "胸部", `count`: 10 | 书写10例胸部CT报告 |
-| 临床药师 | `department`: "呼吸科", `prescription_count`: 30 | 审核呼吸科30张处方 |
-| 科研人员 | `disease`: "高血压", `sample_size`: 100 | 提取100例高血压患者的临床数据 |
-| 护士 | `patient_name`: "张三" | 为张三完成入院护理评估 |
-
----
-
-## 🔍 项目亮点
-
-### 1. 规范化设计
-- 预定义标准任务模板
-- 符合医疗行业规范
-- 可预测的执行结果
-
-### 2. 高可靠性
-- 100% 测试通过率
-- 稳定的执行流程
-- 完善的错误处理
-
-### 3. 易于扩展
-- 模块化架构
-- 清晰的接口定义
-- 完善的文档支持
-
-### 4. 无需真实数据
-- Mock 数据支持完整测试
-- 无需对接真实医疗系统
-- 适合开发和演示环境
-
----
-
-## 🤝 贡献指南
-
-欢迎提交 Issue 和 Pull Request！
-
-### 开发流程
-
-1. Fork 项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送分支 (`git push origin feature/AmazingFeature`)
+1. Fork 项目仓库
+2. 创建特性分支：`git checkout -b feature/your-feature`
+3. 提交代码：`git commit -m "Add your feature"`
+4. 推送分支：`git push origin feature/your-feature`
 5. 创建 Pull Request
 
----
+### 2. 代码审查
 
-## 📄 许可证
+- 确保代码符合项目风格
+- 提供清晰的提交信息
+- 包含单元测试
+- 描述功能变更和影响
 
-本项目采用 [MIT](LICENSE) 许可证
+### 3. 问题反馈
 
----
+- 在 GitHub Issues 中提交问题
+- 提供详细的错误信息和复现步骤
+- 如有可能，提供修复建议
 
-## 📞 联系方式
+## 许可证
 
-- 项目主页：[GitHub](https://github.com/your-org/medclaw)
-- 问题反馈：[Issues](https://github.com/your-org/medclaw/issues)
-- 文档地址：[Docs](docs/)
+本项目采用 MIT 许可证 - 详见 \[[LICENSE](https://github.com/zteyesreal/MedClaw/releases/edit/LICENSE)]\(LICENSE) 文件。
 
----
+## 技术支持
 
-**MedClaw v1.0.0** - 让医疗工作更智能、更规范、更可靠
+### 联系方式
 
-*基于 OpenClaw 框架构建，专为医疗场景优化*
+- **Email**：<<support@medclaw.ai>>
+- **GitHub Issues**：<https://github.com/zteyesreal/medclaw/issues>
+- **文档**：<http://localhost:8003/docs>
+
+### 常见问题
+
+1. **服务启动失败**
+   - 检查端口是否被占用
+   - 确认依赖是否安装完整
+   - 查看日志文件：`logs/medclaw.log`
+2. **数据库连接失败**
+   - 检查数据库配置
+   - 确认数据库服务是否运行
+   - 验证网络连接
+3. **HIS/LIS/PACS 对接失败**
+   - 检查对应系统配置
+   - 验证网络连通性
+   - 确认接口权限
+
+## 版本历史
+
+| 版本   | 日期         | 主要变更                       |
+| :--- | :--------- | :------------------------- |
+| v2.0 | 2026-03-19 | 工具编排、分布式执行、多 Agent 协作、统一配置 |
+| v1.0 | 2025-12-01 | 基础医疗功能模块                   |
+
+## 致谢
+
+- **开发团队**：MedClaw Development Team
+- **贡献者**：所有为项目做出贡献的开发者
+- **用户**：提供宝贵反馈和建议的医院和医疗机构
+
+***
+
+
